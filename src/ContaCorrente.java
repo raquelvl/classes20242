@@ -16,8 +16,12 @@ public class ContaCorrente {
         dataDeCriacao = LocalDate.now();
     }
 
-    public ContaCorrente(int numeroDaConta, String titular, String cpf, int agencia) {
+    public ContaCorrente(int numeroDaConta, String titular, String cpf, int agencia) throws Exception {
         this.numeroDaConta = numeroDaConta;
+
+        if(titular == null || titular.trim().equals(""))
+            throw new Exception("Titular deve ser um nome valido.");
+
         this.titular = titular;
         this.cpf = cpf;
         this.agencia = agencia;
@@ -59,14 +63,16 @@ public class ContaCorrente {
         return saldo;
     }
 
-    public double sacar(double valor) {
-        if(valor <= saldo)
-            saldo -= valor;
+    public double sacar(double valor) throws Exception {
+        if(valor > saldo)
+            throw new Exception(" Saldo insuficiente.");
+
+        saldo -= valor;
 
         return valor;
     }
 
-    public double transferir(ContaCorrente contaDestino, double valor) {
+    public double transferir(ContaCorrente contaDestino, double valor) throws Exception {
         this.sacar(valor);
         contaDestino.depositar(valor);
         return saldo;

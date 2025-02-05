@@ -12,7 +12,7 @@ public class Agencia {
         this.nome = nome;
     }
 
-    public ContaCorrente adicionarConta(String titular, String cpf) {
+    public ContaCorrente adicionarConta(String titular, String cpf) throws Exception {
         ContaCorrente novaConta = new ContaCorrente(contas.size(), titular, cpf, numero);
         contas.add(novaConta);
         return novaConta;
