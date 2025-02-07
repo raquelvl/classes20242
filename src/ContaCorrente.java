@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class ContaCorrente {
@@ -19,14 +20,30 @@ public class ContaCorrente {
     public ContaCorrente(int numeroDaConta, String titular, String cpf, int agencia) throws Exception {
         this.numeroDaConta = numeroDaConta;
 
-        if(titular == null || titular.trim().equals(""))
-            throw new Exception("Titular deve ser um nome valido.");
+        checaTitular(titular);
+        checaCPF(cpf);
+        checaAgencia(agencia);
 
         this.titular = titular;
         this.cpf = cpf;
         this.agencia = agencia;
         saldo = 0;
         dataDeCriacao = LocalDate.now();
+    }
+
+    private void checaAgencia(int agencia) throws Exception {
+        if(agencia < 0)
+            throw new Exception("Agencia deve ser maior que zero.");
+    }
+
+    private void checaCPF(String cpf) throws Exception {
+        if(cpf == null || cpf.trim().equals(""))
+            throw new Exception("CPF deve ser valido.");
+    }
+
+    private void checaTitular(String titular) throws Exception {
+        if(titular == null || titular.trim().equals(""))
+            throw new Exception("Titular deve ser um nome valido.");
     }
 
     public int getNumeroDaConta() {
@@ -53,23 +70,34 @@ public class ContaCorrente {
         return dataDeCriacao;
     }
 
-    public void setTitular(String titular) {
+    public void setTitular(String titular) throws Exception {
+        checaTitular(titular);
         this.titular = titular;
     }
 
-    public double depositar(double valor) {
-        if(valor > 0)
-            saldo += valor;
+    public double depositar(double valor) throws Exception {
+        checaValorNegativo(valor);
+
+        saldo += valor;
         return saldo;
     }
 
+    private void checaValorNegativo(double valor) throws Exception {
+        if(valor <= 0)
+            throw new Exception("Valor a ser depositado deve ser maior que zero.");
+    }
+
     public double sacar(double valor) throws Exception {
-        if(valor > saldo)
-            throw new Exception(" Saldo insuficiente.");
+        checaValorNegativo(valor);
+        isSaldoSuficiente(valor);
 
         saldo -= valor;
-
         return valor;
+    }
+
+    private void isSaldoSuficiente(double valor) throws Exception {
+        if(valor > saldo)
+            throw new Exception(" Saldo insuficiente.");
     }
 
     public double transferir(ContaCorrente contaDestino, double valor) throws Exception {
@@ -80,13 +108,14 @@ public class ContaCorrente {
 
     @Override
     public String toString() {
+        DateTimeFormatter diaMesAno = DateTimeFormatter.ofPattern("dd/mm/yyyy");
         return "ContaCorrente{" +
                 "numeroDaConta=" + numeroDaConta +
                 ", titular='" + titular + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", agencia=" + agencia +
                 ", saldo=" + saldo +
-                ", dataDeCriacao=" + dataDeCriacao +
+                ", dataDeCriacao=" + dataDeCriacao.format(diaMesAno) +
                 '}';
     }
 
