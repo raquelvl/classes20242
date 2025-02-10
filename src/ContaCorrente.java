@@ -84,7 +84,7 @@ public class ContaCorrente {
 
     private void checaValorNegativo(double valor) throws Exception {
         if(valor <= 0)
-            throw new Exception("Valor a ser depositado deve ser maior que zero.");
+            throw new Exception("Valor deve ser maior que zero.");
     }
 
     public double sacar(double valor) throws Exception {
@@ -97,12 +97,14 @@ public class ContaCorrente {
 
     private void isSaldoSuficiente(double valor) throws Exception {
         if(valor > saldo)
-            throw new Exception(" Saldo insuficiente.");
+            throw new Exception("Saldo insuficiente.");
     }
 
     public double transferir(ContaCorrente contaDestino, double valor) throws Exception {
         this.sacar(valor);
-        contaDestino.depositar(valor);
+        contaDestino.depositar(valor
+
+        );
         return saldo;
     }
 
